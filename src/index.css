@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aurora AI Glass Theme */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Background */
+body {
+  @apply bg-aurora-bg min-h-screen text-aura-deep;
+  background-attachment: fixed;
+  font-family: "Inter", sans-serif;
+}
+
+/* Glassmorphism container */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 20px;
+}
+
+/* Neon border glow */
+.glow-border {
+  border: 1.5px solid rgba(222, 200, 255, 0.9);
+  box-shadow: 0 0 18px rgba(222, 200, 255, 0.65);
+}
+
+/* Futuristic button */
+.btn {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all shadow;
+  background: linear-gradient(135deg, #dec8ff, #ffceb8);
+  color: #2e2e38;
+}
+
+.btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 12px rgba(222, 200, 255, 0.8);
+}
+
+/* Flipbook page */
+/* .flip-page {
+  background: linear-gradient(135deg, #ffffff, #d6ecff, #ffceb8);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: var(--glass-shadow);
+} */
+
+
+/* ------------------ REAL SPIRAL NOTEBOOK WITH WIRES ------------------ */
+
+.spiral-book {
+  position: relative;
+  padding-left: 70px; /* extra space for realistic spiral */
+}
+
+/* Container for rings + holes */
+.spiral-binding {
+  position: absolute;
+  left: 18px;
+  top: 25px;
+  width: 45px;
+  height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none; /* wires aren't clickable */
+}
+
+/* Punch holes */
+.hole {
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+  position: relative;
+  z-index: 2;
+}
+
+/* Spiral wires */
+.wire {
+  width: 32px;
+  height: 22px;
+  border: 3px solid rgba(32, 20, 61, 0.65); /* soft lavender metal */
+  border-radius: 50%;
+  margin-left: -8px; /* aligns wire behind holes */
+  box-shadow: 
+    -2px 3px 4px rgba(0,0,0,0.18),
+    inset -2px -1px 6px rgba(255,255,255,0.6);
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(143, 110, 220, 0.5));
+  position: relative;
+  top: -18px; /* place wire behind hole */
+  z-index: 1;
+}
+
+/* Page styling */
+.notebook-page {
+  background: linear-gradient(135deg, #ffffff, #f9f6ff);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* Page curvature */
+.page-curve {
+  border-radius: 0px 18px 18px 0px;
+}
+
+/* Subtle paper texture with lines */
+.page-texture {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 11px,
+    rgba(0,0,0,0.03) 12px
+  );
+}
+
+.notebook-shadow {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+.flip-page {
+  background-color: #fffef8 !important;
+  border-radius: 12px;
+}
+
+/* Notebook cover texture */
+.notebook-cover {
+  background: linear-gradient(145deg, #f7f1d0, #f6e9a8);
+  background-size: cover;
+  border: 1px solid rgba(150, 130, 70, 0.4);
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.12);
+  position: relative;
+}
+
+/* Back cover (peeking out) */
+.notebook-back {
+  background: #e5d08c;
+  border: 1px solid rgba(150, 130, 70, 0.4);
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  border-radius: 8px;
+}
+
+/* Spiral rings (SVG repeating pattern) */
+.spiral-binding {
+  background-image: radial-gradient(circle, #444 30%, transparent 31%);
+  background-size: 20px 32px;
+  background-repeat: repeat-y;
+  width: 32px;
+  position: absolute;
+  left: -28px;
+  top: 0;
+  height: 100%;
+}
+
+/* Page content (handwriting style) */
+.page-content {
+  font-family: "Handlee", "Comic Neue", "Patrick Hand", cursive;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+/* Torn page effect */
+.torn-edge {
+  mask-image: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='20'>\
+      <path d='M0 15 Q10 5 20 15 T40 15 T60 15 T80 15 T100 15 V20 H0Z' fill='white'/>\
+    </svg>");
+  mask-size: 100% 20px;
+  mask-repeat: no-repeat;
+  mask-position: top;
+}
