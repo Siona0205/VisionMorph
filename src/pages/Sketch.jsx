@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import FeatureSection from "../components/FeatureSection";
 import ImageResult from "../components/ImageResult";
 import Spinner from "../components/Spinner";
-import { generateSketch } from "../utils/api";
+// import { generateSketch } from "../utils/api";
 import FullScreenLoader from "../components/FullScreenLoader";
 import VoiceWave from "../components/VoiceWave";
+import { generateSketch, searchCriminals } from "../utils/api";
+
 
 
 // ⭐ INITIAL FORM STATE
@@ -41,6 +43,11 @@ export default function Sketch() {
   // ⭐ NEW STATES FOR VOICE INPUT
   const [voiceText, setVoiceText] = useState("");
   const [listening, setListening] = useState(false);
+
+// ⭐ STATES FOR SEARCHING CRIMINALS
+  const [searching, setSearching] = useState(false);
+const [matches, setMatches] = useState([]);
+
 
   // ⭐ HELPERS
   const setField = (k, v) => setForm((s) => ({ ...s, [k]: v }));
@@ -81,7 +88,7 @@ export default function Sketch() {
     }
 
     description +=
-      ". Generate a pencil sketch with accurate proportions, plain neutral background, and precise facial detailing.";
+      ". Generate a real pencil sketch with accurate proportions, plain neutral background, and precise facial detailing.";
 
     console.log("Generated prompt:", description);
     return description;
@@ -108,6 +115,25 @@ export default function Sketch() {
       setLoading(false);
     }
   };
+
+  // ⭐ SEARCH CRIMINALS
+  const handleSearchCriminals = async () => {
+    if (!result?.data) return;
+
+    try {
+      setSearching(true);
+      setError("");
+
+      const response = await searchCriminals(result.data);
+      setMatches(response.matches || []);
+    } catch (err) {
+      console.error("Search error:", err);
+      setError(err.message || "Failed to search criminals");
+    } finally {
+      setSearching(false);
+    }
+  };
+
 
   // ⭐ DOWNLOAD
   const handleDownload = async (res) => {
@@ -342,6 +368,52 @@ export default function Sketch() {
 
         {/* RESULT */}
         <ImageResult result={result} onDownload={handleDownload} />
+
+        {/* ⭐ NEW — Search Criminals Section */}
+        {/* 🔍 SEARCH CRIMINAL DATABASE */}
+        {result && (
+          <div className="glass p-4 rounded-xl mt-6">
+            <button
+              className="btn"
+              onClick={handleSearchCriminals}
+              disabled={searching}
+            >
+              {searching ? "Searching…" : "Search from Previous Criminals"}
+            </button>
+
+            {/* RESULTS */}
+            {matches.map((m, i) => (
+              <div key={i} className="glass p-4 rounded-xl flex gap-4 items-center">
+
+                {/* Criminal Image */}
+                <img
+                  src={m.image}
+                  alt={m.id}
+                  className="w-24 h-24 rounded-lg object-cover border"
+                />
+
+                <div className="flex-1">
+                  <h4 className="font-semibold">{m.id}</h4>
+
+                  {/* Confidence bar */}
+                  <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
+                    <div
+                      className="bg-green-500 h-3 rounded-full transition-all"
+                      style={{ width: `${m.similarity}%` }}
+                    />
+                  </div>
+
+                  <p className="text-sm mt-1">
+                    Similarity: <strong>{m.similarity}%</strong>
+                  </p>
+                </div>
+
+              </div>
+            ))}
+
+          </div>
+        )}
+
 
       </div>
     </div>
