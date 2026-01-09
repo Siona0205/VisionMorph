@@ -1,7 +1,7 @@
 // src/utils/api.js
 
 // ⭐ Your LIVE backend URL (NO trailing slash)
-export const API_BASE = "https://e6ea6f23708a.ngrok-free.app";
+export const API_BASE = "https://2baf49a18fe4.ngrok-free.app";
 
 // Endpoint URLs
 export const GENERATE_URL = `${API_BASE}/generate`;

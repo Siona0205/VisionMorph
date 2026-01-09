@@ -1,4 +1,5 @@
 // src/pages/Sketch.jsx
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import FeatureSection from "../components/FeatureSection";
 import ImageResult from "../components/ImageResult";
@@ -6,7 +7,8 @@ import Spinner from "../components/Spinner";
 // import { generateSketch } from "../utils/api";
 import FullScreenLoader from "../components/FullScreenLoader";
 import VoiceWave from "../components/VoiceWave";
-import { generateSketch, searchCriminals } from "../utils/api";
+// import { generateSketch, searchCriminals } from "../utils/api";
+import { generateSketch, editSketch } from "../utils/api";
 
 
 
@@ -39,6 +41,7 @@ export default function Sketch() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [changeReq, setChangeReq] = useState("");
+  const navigate = useNavigate();
 
   // ⭐ NEW STATES FOR VOICE INPUT
   const [voiceText, setVoiceText] = useState("");
@@ -116,23 +119,49 @@ const [matches, setMatches] = useState([]);
     }
   };
 
-  // ⭐ SEARCH CRIMINALS
-  const handleSearchCriminals = async () => {
-    if (!result?.data) return;
+  // ⭐ EDIT EXISTING SKETCH
+  const handleEdit = async () => {
+    if (!result || !changeReq) return;
+
+    setError("");
+    setLoading(true);
 
     try {
-      setSearching(true);
-      setError("");
+      const res = await editSketch(changeReq, result.data);
 
-      const response = await searchCriminals(result.data);
-      setMatches(response.matches || []);
+      let data = res.data;
+      if (!data.startsWith("data:")) {
+        data = `data:image/png;base64,${data}`;
+      }
+
+      setResult({ type: "base64", data });
+      setChangeReq("");
     } catch (err) {
-      console.error("Search error:", err);
-      setError(err.message || "Failed to search criminals");
+      console.error("Edit error:", err);
+      setError(err.message || "Failed to apply edits");
     } finally {
-      setSearching(false);
+      setLoading(false);
     }
   };
+
+
+  // // ⭐ SEARCH CRIMINALS
+  // const handleSearchCriminals = async () => {
+  //   if (!result?.data) return;
+
+  //   try {
+  //     setSearching(true);
+  //     setError("");
+
+  //     const response = await searchCriminals(result.data);
+  //     setMatches(response.matches || []);
+  //   } catch (err) {
+  //     console.error("Search error:", err);
+  //     setError(err.message || "Failed to search criminals");
+  //   } finally {
+  //     setSearching(false);
+  //   }
+  // };
 
 
   // ⭐ DOWNLOAD
@@ -254,7 +283,16 @@ const [matches, setMatches] = useState([]);
             <input className="w-full mt-3 p-3 rounded-md" placeholder="Type approximate age (e.g., early 20s)" value={form.age} onChange={(e)=>setField("age", e.target.value)} />
           </div>
 
-          <FeatureSection id="faceShape" title="Face Shape" options={faceShapes} value={form.faceShape} onChange={(v) => setField("faceShape", v)} />
+          {/* <FeatureSection id="faceShape" title="Face Shape" options={faceShapes} value={form.faceShape} onChange={(v) => setField("faceShape", v)} /> */}
+          <FeatureSection
+              id="faceShape"
+              title="Face Shape"
+              options={faceShapes}
+              value={form.faceShape}
+              onChange={(v) => setField("faceShape", v)}
+              pdfUrl="/pdfs/VM_faceShape.pdf"
+            />
+
 
           <FeatureSection
             id="hair"
@@ -265,25 +303,33 @@ const [matches, setMatches] = useState([]);
             placeholder="Type hair color/style"
           />
 
-          <FeatureSection id="hairline" title="Hairline" options={hairlineOpts} value={form.hairline} onChange={(v)=>setField("hairline", v)} />
+          {/* <FeatureSection id="hairline" title="Hairline" options={hairlineOpts} value={form.hairline} onChange={(v)=>setField("hairline", v)} /> */}
+          <FeatureSection
+            id="hairline"
+            title="Hairline"
+            options={hairlineOpts}
+            value={form.hairline}
+            onChange={(v) => setField("hairline", v)}
+            pdfUrl="/pdfs/VM_faceHairline.pdf"
+          />
 
-          <FeatureSection id="forehead" title="Forehead" options={foreheadOpts} value={form.forehead} onChange={(v)=>setField("forehead", v)} />
+          <FeatureSection id="forehead" title="Forehead" options={foreheadOpts} value={form.forehead} onChange={(v)=>setField("forehead", v)} pdfUrl="/pdfs/VM_faceforehead.pdf" />
 
-          <FeatureSection id="eyebrows" title="Eyebrows" options={eyebrowOpts} value={form.eyebrows} onChange={(v)=>setField("eyebrows", v)} />
+          <FeatureSection id="eyebrows" title="Eyebrows" options={eyebrowOpts} value={form.eyebrows} onChange={(v)=>setField("eyebrows", v)} pdfUrl="/pdfs/VM_Eyebrows.pdf"/>
 
-          <FeatureSection id="eyes" title="Eyes" options={[...eyeOpts, ...eyeColorOpts]} value={form.eyes} onChange={(v)=>setField("eyes", v)} />
+          <FeatureSection id="eyes" title="Eyes" options={[...eyeOpts, ...eyeColorOpts]} value={form.eyes} onChange={(v)=>setField("eyes", v)} pdfUrl="/pdfs/VM_eye.pdf" />
 
-          <FeatureSection id="nose" title="Nose" options={noseOpts} value={form.nose} onChange={(v)=>setField("nose", v)} />
+          <FeatureSection id="nose" title="Nose" options={noseOpts} value={form.nose} onChange={(v)=>setField("nose", v)} pdfUrl="/pdfs/VM_nose.pdf" />
 
-          <FeatureSection id="cheeks" title="Cheeks" options={cheekOpts} value={form.cheeks} onChange={(v)=>setField("cheeks", v)} />
+          <FeatureSection id="cheeks" title="Cheeks" options={cheekOpts} value={form.cheeks} onChange={(v)=>setField("cheeks", v)} pdfUrl="/pdfs/VM_cheek.pdf" />
 
-          <FeatureSection id="lips" title="Lips" options={lipOpts} value={form.lips} onChange={(v)=>setField("lips", v)} />
+          <FeatureSection id="lips" title="Lips" options={lipOpts} value={form.lips} onChange={(v)=>setField("lips", v)} pdfUrl="/pdfs/VM_lips.pdf"/>
 
-          <FeatureSection id="jaw" title="Jawline" options={jawOpts} value={form.jaw} onChange={(v)=>setField("jaw", v)} />
+          <FeatureSection id="jaw" title="Jawline" options={jawOpts} value={form.jaw} onChange={(v)=>setField("jaw", v)} pdfUrl="/pdfs/VM_jaw.pdf"/>
 
           <FeatureSection id="skin" title="Skin" options={skinOpts} value={form.skin} onChange={(v)=>setField("skin", v)} />
 
-          <FeatureSection id="ears" title="Ears" options={earOpts} value={form.ears} onChange={(v)=>setField("ears", v)} />
+          <FeatureSection id="ears" title="Ears" options={earOpts} value={form.ears} onChange={(v)=>setField("ears", v)} pdfUrl="/pdfs/VM_ears.pdf" />
 
           <FeatureSection id="facial_hair" title="Facial Hair" options={facialHairOpts} value={form.facial_hair} onChange={(v)=>setField("facial_hair", v)} />
 
@@ -315,9 +361,14 @@ const [matches, setMatches] = useState([]);
                 rows={2}
               />
               <div className="flex gap-3 mt-3">
-                <button className="btn" disabled={!changeReq || loading} onClick={() => handleGenerate(changeReq)}>
-                  {loading ? "Applying…" : "Apply Changes"}
-                </button>
+                <button
+                    className="btn"
+                    disabled={!changeReq || loading}
+                    onClick={handleEdit}
+                  >
+                    {loading ? "Applying…" : "Apply Changes"}
+                  </button>
+
                 <button className="px-4 py-2 rounded-xl" onClick={()=> setChangeReq("")}>
                   Clear
                 </button>
@@ -369,49 +420,18 @@ const [matches, setMatches] = useState([]);
         {/* RESULT */}
         <ImageResult result={result} onDownload={handleDownload} />
 
-        {/* ⭐ NEW — Search Criminals Section */}
-        {/* 🔍 SEARCH CRIMINAL DATABASE */}
-        {result && (
-          <div className="glass p-4 rounded-xl mt-6">
-            <button
-              className="btn"
-              onClick={handleSearchCriminals}
-              disabled={searching}
-            >
-              {searching ? "Searching…" : "Search from Previous Criminals"}
-            </button>
-
-            {/* RESULTS */}
-            {matches.map((m, i) => (
-              <div key={i} className="glass p-4 rounded-xl flex gap-4 items-center">
-
-                {/* Criminal Image */}
-                <img
-                  src={m.image}
-                  alt={m.id}
-                  className="w-24 h-24 rounded-lg object-cover border"
-                />
-
-                <div className="flex-1">
-                  <h4 className="font-semibold">{m.id}</h4>
-
-                  {/* Confidence bar */}
-                  <div className="w-full bg-gray-200 rounded-full h-3 mt-2">
-                    <div
-                      className="bg-green-500 h-3 rounded-full transition-all"
-                      style={{ width: `${m.similarity}%` }}
-                    />
-                  </div>
-
-                  <p className="text-sm mt-1">
-                    Similarity: <strong>{m.similarity}%</strong>
-                  </p>
-                </div>
-
-              </div>
-            ))}
-
-          </div>
+       {/*this section is for that search top 5 matched criminals  */}
+       {result && (
+          <button
+            className="btn mt-6"
+            onClick={() =>
+              navigate("/search-leads", {
+                state: { image: result.data },
+              })
+            }
+          >
+            🔎 Search From Previous Criminals
+          </button>
         )}
 
 

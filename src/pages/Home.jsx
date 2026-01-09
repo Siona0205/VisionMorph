@@ -2,28 +2,45 @@ import React, { useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { useNavigate } from "react-router-dom";
 import { FaBookOpen } from "react-icons/fa";
+import Slideshow from "../components/Slideshow";
 
 export default function Home() {
   const flipBook = useRef(null);
   const navigate = useNavigate();
 
+  const showcaseImages = [
+    "/showcase/sketch1.png",
+    "/showcase/sketch2.png",
+    "/showcase/sketch3.png",
+    "/showcase/sketch4.png",
+    "/showcase/sketch5.png",
+    "/showcase/sketch6.png",
+    "/showcase/sketch7.png",
+    "/showcase/sketch8.png",
+    "/showcase/sketch9.png",
+    "/showcase/sketch10.png",
+    "/showcase/sketch11.png",
+    "/showcase/sketch12.png",
+    
+  ];
+
   const pages = [
     {
       title: "VisionMorph",
-      text: "AI-powered criminal sketch assistant.\nTransform witness memories into detailed sketches."
+      text: "AI-powered criminal sketch assistant.\nTransform descriptions into visual sketches.",
     },
     {
       title: "Why VisionMorph?",
-      text: "Fast suspect reconstruction.\nSimple UI.\nAccurate details.\nAI-powered refinement."
+      text: "Fast suspect reconstruction.\nSimple UI.\nAccurate details.\nAI-powered refinement. We help you to visualize your thoughts without delay",
     },
     {
       title: "Features",
-      text: "• Facial-feature prompt builder\n• iterative edit refinement\n• high-quality sketches\n• easy download"
+      text: "• Facial-feature prompt builder\n• Iterative edit refinement\n• High-quality sketches\n• Easy download",
     },
     {
       title: "How it works",
-      text: "Describe the face → AI builds prompt → Model creates sketch → You refine + download."
-    }
+      text: "Describe the face → AI builds prompt → Model creates sketch → You refine + download.",
+    },
   ];
 
   return (
@@ -40,102 +57,111 @@ export default function Home() {
       </header>
 
       {/* MAIN */}
-      <main className="flex flex-col items-center gap-12 mt-12">
+      <main className="w-full flex flex-col items-center gap-16 mt-12">
 
-        {/* NOTEBOOK WRAPPER */}
-        <div className="relative">
+        {/* HERO SECTION */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl w-full">
 
-          {/* METALLIC SPIRAL BINDING */}
-          <div className="absolute -left-6 top-5 bottom-5 w-8 flex flex-col justify-between">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: "22px",
-                  height: "10px",
-                  borderRadius: "12px",
-                  border: "3px solid #444",
-                  margin: "5px 0",
-                  boxShadow:
-                    "inset 0 0 4px rgba(0,0,0,0.8), 0 1px 1px rgba(0,0,0,0.4)"
-                }}
-              ></div>
-            ))}
-          </div>
+          {/* LEFT — SLIDESHOW */}
+            <div className="flex flex-col items-center">
 
-          {/* NOTEBOOK COVER */}
-          <div
-            className="rounded-xl shadow-2xl"
-            style={{
-              background: "#ffefb0", // butter-yellow improved tone
-              padding: "24px",
-              borderRadius: "16px",
-              boxShadow:
-                "0 8px 20px rgba(0,0,0,0.15), inset 0 0 12px rgba(255,255,255,0.4)"
-            }}
-          >
-            {/* FLIPBOOK */}
-            <div style={{ width: 360 }}>
-              <HTMLFlipBook
-                width={330}
-                height={450}
-                minWidth={250}
-                maxWidth={380}
-                maxHeight={600}
-                showCover={false}
-                mobileScrollSupport={true}
-                ref={flipBook}
-                className="rounded-xl"
-                style={{
-                  borderRadius: "14px",
-                  boxShadow:
-                    "0 4px 10px rgba(0,0,0,0.15), inset 0 0 8px rgba(0,0,0,0.1)"
-                }}
-              >
-                {pages.map((p, i) => (
-                  <article
-                    key={i}
-                    className="flip-page"
-                    style={{
-                      background: "#fffdf7",
-                      padding: "35px 28px",
-                      borderRadius: "12px",
-                      fontFamily: "'Kalam', cursive",
-                      fontSize: "1.05rem",
-                      lineHeight: "1.55",
-                      color: "#444",
-                      whiteSpace: "pre-line",
-                      boxShadow:
-                        "inset 0 0 8px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.1)"
-                    }}
-                  >
-                    <h3
-                      className="text-xl mb-3"
-                      style={{
-                        fontFamily: "'Kalam', cursive",
-                        fontWeight: "700",
-                        color: "#222",
-                        letterSpacing: "0.5px",
-                        marginBottom: "10px"
-                      }}
-                    >
-                      {p.title}
-                    </h3>
+              {/* 🖼️ SLIDESHOW HEADING */}
+              <h3 className="text-xl font-semibold text-center">
+                Previously Generated Sketches
+              </h3>
 
-                    <p>{p.text}</p>
-                  </article>
-                ))}
-              </HTMLFlipBook>
+              <p className="text-center text-sm opacity-70 mt-1 mb-4 max-w-sm">
+                A glimpse of sketches created earlier using VisionMorph to assist
+                investigations.
+              </p>
+
+              {/* OPTIONAL DECORATIVE LINE */}
+              <div className="w-24 h-1 bg-aurora-lavender/60 mb-6 rounded-full"></div>
+
+              {/* SLIDESHOW */}
+              <Slideshow images={showcaseImages} interval={1050} />
             </div>
 
-            {/* OPEN NOTEBOOK BUTTON */}
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => flipBook.current?.flip(1)}
-                className="btn flex items-center gap-2"
+
+          {/* RIGHT — FLIPBOOK */}
+          <div className="flex justify-center">
+            <div className="relative">
+              <h3 className="text-xl font-semibold text-center">
+                What is VisionMorph?
+              </h3>
+
+              <p className="text-center text-sm opacity-70 mt-1 mb-4 max-w-sm">
+                Turn the pages of our notebook to discover VisionMorph!! 
+              </p>
+
+              {/* METALLIC SPIRAL BINDING */}
+              <div className="absolute -left-6 top-5 bottom-5 w-8 flex flex-col justify-between">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: "22px",
+                      height: "10px",
+                      borderRadius: "12px",
+                      border: "3px solid #444",
+                      margin: "5px 0",
+                      boxShadow:
+                        "inset 0 0 4px rgba(0,0,0,0.8), 0 1px 1px rgba(0,0,0,0.4)",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* NOTEBOOK COVER */}
+              <div
+                className="rounded-xl shadow-2xl"
+                style={{
+                  background: "#ffefb0",
+                  padding: "24px",
+                  borderRadius: "16px",
+                  boxShadow:
+                    "0 8px 20px rgba(0,0,0,0.15), inset 0 0 12px rgba(255,255,255,0.4)",
+                }}
               >
-                <FaBookOpen /> Open Notebook
-              </button>
+                {/* FLIPBOOK */}
+                <div style={{ width: 360 }}>
+                  <HTMLFlipBook
+                    width={330}
+                    height={450}
+                    showCover={false}
+                    mobileScrollSupport={true}
+                    ref={flipBook}
+                  >
+                    {pages.map((p, i) => (
+                      <article
+                        key={i}
+                        className="flip-page"
+                        style={{
+                          background: "#fffdf7",
+                          padding: "35px 28px",
+                          fontFamily: "'Kalam', cursive",
+                          whiteSpace: "pre-line",
+                          boxShadow:
+                            "inset 0 0 8px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        <h3 className="text-xl mb-3 font-bold">{p.title}</h3>
+                        <p>{p.text}</p>
+                      </article>
+                    ))}
+                  </HTMLFlipBook>
+                </div>
+
+                {/* OPEN NOTEBOOK BUTTON */}
+                <div className="flex justify-center mt-4">
+                  <button
+                    onClick={() => flipBook.current?.flip(1)}
+                    className="btn flex items-center gap-2"
+                  >
+                    <FaBookOpen /> Open Notebook
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -151,7 +177,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="mt-14 opacity-80">
-        © {new Date().getFullYear()} VisionMorph • Contact: visionmorph@example.com
+        © {new Date().getFullYear()} VisionMorph • Contact: visionmorph@gmail.com
       </footer>
     </div>
   );
